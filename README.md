@@ -1,3 +1,5 @@
+Implement the C program for Deadlock Avoidance Algorithm: Bankers
+
 #include<stdio.h>
 int max[10][10], allocation[10][10],need[10][10];
 int avail[10];
