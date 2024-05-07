@@ -123,3 +123,39 @@ banker();
 printf("\n\n\n\n");
 return 0;
 }
+
+Output:
+Deadlock
+Initial allocation
+0  1  0
+2  0  0
+3  0  2
+2  1  1
+0  0  2
+Maximum Requirement
+7  5  3
+13  2  2
+9  0  2
+2  2  2
+4  3  3
+Available resources
+3  3  2
+The syste is in deadlock
+
+Safe sequence-
+Initial allocation
+0  1  0
+2  0  0
+3  0  2
+2  1  1
+0  0  2
+Maximum Requirement
+7  5  3
+3  2  2
+9  0  2
+2  2  2
+4  3  3
+Available resources
+3  3  2
+
+The system is in safe sequence- P1  P3  P0  P2  P4
