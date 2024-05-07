@@ -1,119 +1,125 @@
----------------------------- Create Table----------------------------------------
-
-CREATE TABLE amitdb.student (
-  StudentID INT NOT NULL,
-  FirstName VARCHAR(45) NOT NULL,
-  LastName VARCHAR(45) NOT NULL,
-  Age VARCHAR(45) NOT NULL,
-  PRIMARY KEY (StudentID));
-
-SELECT * FROM amitdb.student;
-
------------------------------INSERT TABLE---------------------------------------
-
-INSERT INTO amitdb.student (StudentID, FirstName, LastName, Age) VALUES ('1', 'Neha', 'Dalvi', '23');
-INSERT INTO amitdb.student (StudentID, FirstName, LastName, Age) VALUES ('2', 'Karan', 'Gosavi', '24');
-INSERT INTO amitdb.student (StudentID, FirstName, LastName, Age) VALUES ('3', 'Rohit', 'Pathan', '23');
-INSERT INTO amitdb.student (StudentID, FirstName, LastName, Age) VALUES ('4', 'Raj', 'Satpute', '24');
-INSERT INTO amitdb.student (StudentID, FirstName, LastName, Age) VALUES ('5', 'Aman', 'Mogal', '24');
-
-SELECT * FROM amitdb.student;
-
-
---------------------------------Stored table----------------------------------------
-
-CREATE PROCEDURE get_student_info()
-BEGIN
-SELECT * FROM amitdb.student;
-END
-
-USE amitdb;
-DROP procedure IF EXISTS get_student_info;
-DELIMITER $$
-USE amitdb$$
-CREATE PROCEDURE get_student_info()
-BEGIN
-SELECT * FROM amitdb.student;
-END$$
-DELIMITER ;
-
-SELECT * FROM amitdb.student;
-call get_student1_info();
-
-
-------------------------------IN--------------------------------
-
-CREATE DEFINER=root@localhost PROCEDURE get_student_info(in age int)
-BEGIN
-SELECT * FROM amitdb.student where student.age=age;
-END
-
-USE amitdb;
-DROP procedure IF EXISTS get_student_info;
-USE amitdb;
-DROP procedure IF EXISTS amitdb.get_student_info;
-;
-DELIMITER $$
-USE amitdb$$
-CREATE DEFINER=root@localhost PROCEDURE get_student_info(in age int)
-BEGIN
-SELECT * FROM amitdb.student where student.age=age;
-END$$
-DELIMITER ;
-;
-
-SELECT * FROM amitdb.student;
-call get_student_info(24)
-
-
------------------------------------OUT------------------------------------
-
-CREATE DEFINER=root@localhost PROCEDURE get_student_info(out records int)
-BEGIN
-SELECT count(*) INTO records FROM amitdb.student where student.age=25;
-END
-
-USE amitdb;
-DROP procedure IF EXISTS get_student_info;
-USE amitdb;
-DROP procedure IF EXISTS amitdb.get_student_info;
-;
-DELIMITER $$
-USE amitdb$$
-CREATE DEFINER=root@localhost PROCEDURE get_student_info(out records int)
-BEGIN
-SELECT count(*) INTO records FROM amitdb.student where student.age=24;
-END$$
-DELIMITER ;
-;
-
-SELECT * FROM amitdb.student;
-call get_student_info(@records);
-select @records as Toatalrecords;
-
-
-
-----------------------------INOUT----------------------------------------
-
-CREATE DEFINER=root@localhost PROCEDURE get_student_info(inout records int, in age int)
-BEGIN
-SELECT count(*) INTO records FROM amitdb.student where student.age= age;
-END
-
-USE amitdb;
-DROP procedure IF EXISTS get_student_info;
-USE amitdb;
-DROP procedure IF EXISTS amitdb.get_student_info;
-;
-DELIMITER $$
-USE amitdb$$
-CREATE DEFINER=root@localhost PROCEDURE get_student_info(inout records int, in age int)
-BEGIN
-SELECT count(*) INTO records FROM amitdb.student where student.age= age;
-END$$
-DELIMITER ;
-;
-
-SELECT * FROM amitdb.student;
-call get_student_info(@records,24);
-select @records as Toatalrecords;
+#include<stdio.h>
+int max[10][10], allocation[10][10],need[10][10];
+int avail[10];
+int np, nr;
+void readmatrix(int matrix[10][10])
+{
+int i,j;
+for(i=0;i<np;i++)
+for(j=0;j<nr;j++) 
+scanf("%d", &matrix[i][j]);
+} 
+void display_matrix(int matrix[10][10]) 
+{2
+int i,j;
+for(i=0;i<np;i++) 
+{
+printf("\n P%d", i); 
+for(j=0;j<nr;j++)
+{
+	printf("%d", matrix[i][j]);
+} 
+}
+} 
+void calculate_need()
+{
+int i,j;
+for(i=0;i<np;i++) 
+for(j=0;j<nr;j++) 
+need[i][j]=max[i][j]-allocation[i][j];
+}
+void banker()
+{ 
+int i,j,k=0,flag;
+int finish [10], safe_seq[10];
+for(i=0;i<np;i++)
+{ 
+finish[i]=0;
+//Declare as all processes are incomplete
+} 
+for(i=0;i<np;i++)
+{ 
+flag=0;
+if(finish[i]==0)
+//Execute incomplete processes {
+{
+for(j=0;j<nr;j++)
+//check a need of each process { if(need[i][j]>avail[j])
+{
+if(need[i][j]>avail[j])
+{
+flag=1;
+//Break a loop as need is greater than avail and go to next process break;
+break;
+}
+}
+if(flag==0)
+//Need is lesser than avail so complete process {
+{
+finish[i]=1; 
+safe_seq[k]=i;
+k++;
+//Add allocated resources of finished process in available resources.
+for(j=0;j<nr;j++)
+avail[j]+=allocation[i][j];
+//start checking from first process again.
+i=-1;
+}
+}
+} 
+flag=0;
+//Check if all processes are completed
+for(i=0;i<np;i++)
+{
+ if(finish[i]==0) {
+printf("\nThe system is in deadlock");
+flag=1;
+break;
+}
+}
+if(flag==0)
+{ 
+printf("\n The system is in safe state! \n Safe sequence is ==>"); 
+for(i=0;i<np;i++) 
+printf(" P%d", safe_seq[i]);
+}
+}
+int main()
+{
+int j;
+//read input
+{
+printf("\nEnter number of processes"); 
+scanf("%d", &np);
+printf("\nEnter number of resources");
+scanf("%d", &nr);
+printf("\n Enter initial allocation matrix:"); 
+readmatrix(allocation);
+printf("\n Enter Max requirement matrix:");
+readmatrix(max); 
+printf("\n Enter available resources:");
+for(j=0;j<nr;j++)
+scanf("%d", &avail[j]);
+}
+//Display entered data
+{ 
+printf("\n ***Entered Data is ***\n\n");
+printf("\n Initial allocation:\n"); 
+display_matrix (allocation);
+printf("\n\n\n Maximum Requirement\n");
+display_matrix(max);
+printf("\n Available Resources\n");
+for(j=0;j<nr;j++)
+printf("%d",avail[j]);
+}
+//Calculate and display need
+{
+calculate_need(); 
+printf("\n\n\n Need is \n");
+display_matrix(need);
+}
+//Execute proceeses using Bankers Algorithem Execute
+banker(); 
+printf("\n\n\n\n");
+return 0;
+}
