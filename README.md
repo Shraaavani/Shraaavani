@@ -161,3 +161,12 @@ Available resources
 3  3  2
 
 The system is in safe sequence- P1  P3  P0  P2  P4
+
+The Banker's algorithm is a technique used in operating systems to prevent deadlocks. It's designed to ensure safe resource allocation for processes, avoiding situations where processes become permanently blocked waiting for each other's resources. Its purpose is to prevent deadlock by carefully managing the allocation of resources to processes.
+Algo:
+Initialization: The system gathers information about the total available resources and the maximum resources each process may request.
+Resource Allocation: Before allocating resources to a process, the system simulates the allocation to check if it will lead to a safe state. If the allocation will keep the system safe from deadlock, the resources are granted; otherwise, the process must wait.
+Safety Check: The system ensures that at any given time, it maintains enough resources to guarantee that at least one process can proceed to completion.
+Resource Release: When a process finishes using resources, it releases them back to the system, making them available for other processes.
+
+The Banker's algorithm helps prevent deadlocks by ensuring that resources are only allocated in a way that won't lead to a permanent blocking situation. It's like a bank carefully assessing loan requests to avoid situations where borrowers can't repay their debts, hindering the overall system.
