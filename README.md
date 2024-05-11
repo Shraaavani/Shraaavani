@@ -1,172 +1,485 @@
-Implement the C program for Deadlock Avoidance Algorithm: Bankers
+Lab assignment 2
 
-#include<stdio.h>
-int max[10][10], allocation[10][10],need[10][10];
-int avail[10];
-int np, nr;
-void readmatrix(int matrix[10][10])
+#include <GL/glut.h>
+
+#include <stdlib.h>
+
+#include <stdio.h>
+
+void displayPoint(int x, int y)
+
 {
-int i,j;
-for(i=0;i<np;i++)
-for(j=0;j<nr;j++) 
-scanf("%d", &matrix[i][j]);
-} 
-void display_matrix(int matrix[10][10]) 
-{2
-int i,j;
-for(i=0;i<np;i++) 
-{
-printf("\n P%d", i); 
-for(j=0;j<nr;j++)
-{
-	printf("%d", matrix[i][j]);
-} 
+
+glColor3f(0, 1, 0);
+
+glPointSize(5);
+
+glBegin(GL_POINTS);
+
+glVertex2i(x, y);
+
+glEnd();
+
 }
-} 
-void calculate_need()
+
+float x01, x2, y01, y2;
+
+int ch;
+
+void SimpleLine(float x1, float y1, float x2, float y2)
+
 {
-int i,j;
-for(i=0;i<np;i++) 
-for(j=0;j<nr;j++) 
-need[i][j]=max[i][j]-allocation[i][j];
+
+float step;
+
+float dx = x2 - x1;
+
+float dy = y2 - y1;
+
+if (abs(dx) > abs(dy))
+
+{
+
+step = abs(dx);
+
 }
-void banker()
-{ 
-int i,j,k=0,flag;
-int finish [10], safe_seq[10];
-for(i=0;i<np;i++)
-{ 
-finish[i]=0;
-//Declare as all processes are incomplete
-} 
-for(i=0;i<np;i++)
-{ 
-flag=0;
-if(finish[i]==0)
-//Execute incomplete processes {
+
+else
+
+step = abs(dy);
+
+float Xinc = dx / (float)step;
+float Yinc = dy / (float)step;
+
+float x = x1;
+
+float y = y1;
+
+for (int i = 0; i<= step; i++)
+
 {
-for(j=0;j<nr;j++)
-//check a need of each process { if(need[i][j]>avail[j])
+
+displayPoint(x, y);
+
+x = x + Xinc;
+
+y = y + Yinc;
+
+}
+
+glFlush();
+
+}
+
+void DottedLine(float x1, float y1, float x2, float y2)
+
 {
-if(need[i][j]>avail[j])
+
+float step;
+
+float dx = x2 - x1;
+
+float dy = y2 - y1;
+
+if (abs(dx) > abs(dy))
+
 {
-flag=1;
-//Break a loop as need is greater than avail and go to next process break;
+
+step = abs(dx);
+
+}
+
+else
+
+step = abs(dy);
+
+float Xinc = dx / (float)step;
+
+float Yinc = dy / (float)step;
+
+float x = x1;
+
+float y = y1;
+
+displayPoint(x, y);
+
+for (int i = 0; i<= step; i++)
+
+{
+
+x = x + Xinc;
+
+y = y + Yinc;
+
+if (i % 3 == 0)
+
+{
+
+displayPoint(x, y);
+
+}
+
+}
+
+glFlush();
+
+}
+
+void DashedLine(float x1, float y1, float x2, float y2)
+
+{
+
+float step;
+
+float dx = x2 - x1;
+
+float dy = y2 - y1;
+
+if (abs(dx) > abs(dy))
+
+{
+
+step = abs(dx);
+
+}
+
+else
+
+step = abs(dy);
+
+float Xinc = dx / (float)step;
+
+float Yinc = dy / (float)step;
+
+float x = x1;
+
+float y = y1;
+
+displayPoint(x, y);
+
+for (int i = 0; i<= step; i++)
+
+{
+
+x = x + Xinc;
+
+y = y + Yinc;
+
+if (i % 7 == 0)
+
+{
+
+displayPoint(x, y);
+
+}
+
+}
+
+glFlush();
+
+}
+
+void myMouse(int button, int state, int x, int y)
+
+{
+
+static int xst, yst, pt = 0;
+
+if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+
+{
+
+if (pt == 0)
+
+{
+
+xst = x;
+
+yst = y;
+
+x01 = xst;
+
+y01 = yst;
+
+pt = pt + 1;
+
+}
+
+else
+
+{
+
+x2 = x;
+
+y2 = y;
+
+if (ch == 1)
+
+{
+
+SimpleLine(xst, yst, x, y);
+
+}
+
+else if (ch == 2)
+
+{
+
+DottedLine(xst, yst, x, y);
+
+}
+
+else if (ch == 3)
+
+{
+
+DashedLine(xst, yst, x, y);
+
+}
+
+xst = x;
+
+yst = y;
+
+}
+
+}
+
+else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
+
+pt = 0;
+
+//Clear Screen
+
+glFlush();
+
+}
+
+void keyboard(unsigned char key, int x, int y)
+
+{
+
+switch (key)
+
+{
+
+case 's':
+
+{
+
+ch = 1;
+
+glutMouseFunc(myMouse);
+
 break;
+
 }
-}
-if(flag==0)
-//Need is lesser than avail so complete process {
+
+case 'd':
+
 {
-finish[i]=1; 
-safe_seq[k]=i;
-k++;
-//Add allocated resources of finished process in available resources.
-for(j=0;j<nr;j++)
-avail[j]+=allocation[i][j];
-//start checking from first process again.
-i=-1;
-}
-}
-} 
-flag=0;
-//Check if all processes are completed
-for(i=0;i<np;i++)
-{
- if(finish[i]==0) {
-printf("\nThe system is in deadlock");
-flag=1;
+
+ch = 2;
+
+glutMouseFunc(myMouse);
+
 break;
+
 }
-}
-if(flag==0)
-{ 
-printf("\n The system is in safe state! \n Safe sequence is ==>"); 
-for(i=0;i<np;i++) 
-printf(" P%d", safe_seq[i]);
-}
-}
-int main()
+
+case 'D':
+
 {
-int j;
-//read input
+
+ch = 3;
+
+glutMouseFunc(myMouse);
+
+break;
+
+}
+
+}
+
+glutPostRedisplay();
+
+}
+
+void initialize(void)
+
 {
-printf("\nEnter number of processes"); 
-scanf("%d", &np);
-printf("\nEnter number of resources");
-scanf("%d", &nr);
-printf("\n Enter initial allocation matrix:"); 
-readmatrix(allocation);
-printf("\n Enter Max requirement matrix:");
-readmatrix(max); 
-printf("\n Enter available resources:");
-for(j=0;j<nr;j++)
-scanf("%d", &avail[j]);
+
+glClearColor(1.0, 1.0, 1.0, 1.0);
+
+glClear(GL_COLOR_BUFFER_BIT);
+
+// gluOrtho2D(l,r,b,t)
+
+gluOrtho2D(0, 600, 600, 0);
+
 }
-//Display entered data
-{ 
-printf("\n ***Entered Data is ***\n\n");
-printf("\n Initial allocation:\n"); 
-display_matrix (allocation);
-printf("\n\n\n Maximum Requirement\n");
-display_matrix(max);
-printf("\n Available Resources\n");
-for(j=0;j<nr;j++)
-printf("%d",avail[j]);
-}
-//Calculate and display need
+
+void primitives(void)
+
 {
-calculate_need(); 
-printf("\n\n\n Need is \n");
-display_matrix(need);
+
+//glClearColor(1.0, 1.0, 1.0, 1.0);
+
+//glClear(GL_COLOR_BUFFER_BIT);
+
+glColor3f(1, 0, 0);
+
+SimpleLine(0, 300, 600, 300);
+
+SimpleLine(300, 0, 300, 600);
+
+glutKeyboardFunc(keyboard);
+
 }
-//Execute proceeses using Bankers Algorithem Execute
-banker(); 
-printf("\n\n\n\n");
+
+int main(int argc, char **argv)
+
+{
+
+glutInit(&argc, argv);
+
+glutInitDisplayMode(GLUT_SINGLE);
+
+glutInitWindowPosition(0, 0);
+
+glutInitWindowSize(600, 600);
+
+glutCreateWindow("OpenGL - DDA Algo");
+
+initialize();
+
+printf("--------------------");
+
+printf("\ns. Simple Line");
+
+printf("\nd. Dotted Line");
+
+printf("\nD. Dashed Line");
+
+printf("\n--------------------\n");
+
+glutDisplayFunc(primitives);
+
+glutMainLoop();
+
 return 0;
+
 }
 
-Output:
-Deadlock
-Initial allocation
-0  1  0
-2  0  0
-3  0  2
-2  1  1
-0  0  2
-Maximum Requirement
-7  5  3
-13  2  2
-9  0  2
-2  2  2
-4  3  3
-Available resources
-3  3  2
-The syste is in deadlock
 
-Safe sequence-
-Initial allocation
-0  1  0
-2  0  0
-3  0  2
-2  1  1
-0  0  2
-Maximum Requirement
-7  5  3
-3  2  2
-9  0  2
-2  2  2
-4  3  3
-Available resources
-3  3  2
 
-The system is in safe sequence- P1  P3  P0  P2  P4
 
-The Banker's algorithm is a technique used in operating systems to prevent deadlocks. It's designed to ensure safe resource allocation for processes, avoiding situations where processes become permanently blocked waiting for each other's resources. Its purpose is to prevent deadlock by carefully managing the allocation of resources to processes.
-Algo:
-Initialization: The system gathers information about the total available resources and the maximum resources each process may request.
-Resource Allocation: Before allocating resources to a process, the system simulates the allocation to check if it will lead to a safe state. If the allocation will keep the system safe from deadlock, the resources are granted; otherwise, the process must wait.
-Safety Check: The system ensures that at any given time, it maintains enough resources to guarantee that at least one process can proceed to completion.
-Resource Release: When a process finishes using resources, it releases them back to the system, making them available for other processes.
 
-The Banker's algorithm helps prevent deadlocks by ensuring that resources are only allocated in a way that won't lead to a permanent blocking situation. It's like a bank carefully assessing loan requests to avoid situations where borrowers can't repay their debts, hindering the overall system.
+
+Lab assignment 3
+
+#include<iostream>
+
+using namespace std;
+
+int r;
+
+void E_way(int x, int y){
+
+glBegin(GL_POINTS);
+
+glVertex2i(x+320,y+240);
+
+glVertex2i(y+320,x+240);
+
+glVertex2i(y+320, -x+240);
+
+glVertex2i(x+320, -y+240);
+
+glVertex2i(-x+320,-y+240);
+
+glVertex2i(-y+320,-x+240);
+
+glVertex2i(-y+320,x+240);
+
+glVertex2i(-x+320,y+240);
+
+glEnd();
+
+glFlush();
+
+}
+
+void B_circle(){
+
+float d;
+
+d = 3 - 2*r;
+
+int x,y;
+
+x = 0 ;
+
+y = r ;
+
+do{
+
+E_way(x,y);
+
+if(d<0){
+
+d=d+4*x+6;
+
+}
+
+else{
+
+d= d+4*(x-y)+10;
+
+y=y-1;
+
+}
+
+x=x+1;
+
+}while(x<y);
+
+}
+
+void init(){
+
+glClearColor(1,1,1,0);
+
+glColor3f(1,0,0);
+
+gluOrtho2D(0,640,0,480);
+
+glClear(GL_COLOR_BUFFER_BIT);
+
+}
+
+int main(int argc, char **argv){
+
+cout<<"\n Enter Radius \t ";
+
+cin>>r;
+
+glutInit(&argc, argv);
+
+glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+
+glutInitWindowPosition(100,100);
+
+glutInitWindowSize(640,480);
+
+glutCreateWindow("Circle");
+
+init();
+
+glutDisplayFunc(B_circle);
+
+glutMainLoop();
+
+return 0;
+
+}
